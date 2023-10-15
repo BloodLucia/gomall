@@ -27,7 +27,7 @@ func NewData() (*Data, func(), error) {
 	}
 
 	return data, func() {
-		if err := db.Close();err!=nil {
+		if err := db.Close(); err != nil {
 			log.Fatalf("falied to close database: %s", err)
 		}
 	}, nil
