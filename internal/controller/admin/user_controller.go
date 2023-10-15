@@ -1,8 +1,12 @@
 package adminctrl
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	adminsrv "github.com/kalougata/gomall/internal/service/admin"
+)
 
 type userController struct {
+	service adminsrv.UserService
 }
 
 // Login 管理员登录
@@ -20,6 +24,6 @@ type UserController interface {
 	Login(ctx *gin.Context)
 }
 
-func NewUserController() UserController {
-	return &userController{}
+func NewUserController(service adminsrv.UserService) UserController {
+	return &userController{service}
 }
