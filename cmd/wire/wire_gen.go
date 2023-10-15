@@ -22,7 +22,8 @@ func NewApp() (*server.Server, func(), error) {
 	mallAPIRouter := mallapi.NewMallAPIRouter(mallPingController)
 	mallServerHTTP := serverhttp.NewMallServerHTTP(mallAPIRouter)
 	adminPingController := adminctrl.NewPingController()
-	adminAPIRouter := adminapi.NewAdminAPIRouter(adminPingController)
+	userController := adminctrl.NewUserController()
+	adminAPIRouter := adminapi.NewAdminAPIRouter(adminPingController, userController)
 	adminServerHTTP := serverhttp.NewAdminServerHTTP(adminAPIRouter)
 	serverServer := server.NewServer(mallServerHTTP, adminServerHTTP)
 	return serverServer, func() {

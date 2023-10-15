@@ -7,13 +7,21 @@ import (
 
 type AdminAPIRouter struct {
 	PingCtrl adminctrl.AdminPingController
+	UserCtrl adminctrl.UserController
 }
 
-func NewAdminAPIRouter(PingCtrl adminctrl.AdminPingController) *AdminAPIRouter {
-	return &AdminAPIRouter{PingCtrl}
+func NewAdminAPIRouter(
+	PingCtrl adminctrl.AdminPingController,
+	UserCtrl adminctrl.UserController,
+) *AdminAPIRouter {
+	return &AdminAPIRouter{
+		PingCtrl,
+		UserCtrl,
+	}
 }
 
 var AdminAPIProvider = wire.NewSet(
 	adminctrl.NewPingController,
+	adminctrl.NewUserController,
 	NewAdminAPIRouter,
 )
