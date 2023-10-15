@@ -11,7 +11,6 @@ import (
 
 func NewApp() (*server.Server, func(), error) {
 	panic(wire.Build(
-
 		serverhttp.NewAdminServerHTTP,
 		serverhttp.NewMallServerHTTP,
 		server.NewServer,
