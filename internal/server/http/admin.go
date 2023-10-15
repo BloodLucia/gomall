@@ -1,19 +1,18 @@
 package serverhttp
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	adminapi "github.com/kalougata/gomall/api/v1/admin"
 )
 
 type AdminServerHTTP *gin.Engine
 
-func NewAdminServerHTTP() AdminServerHTTP {
+func NewAdminServerHTTP(
+	aar *adminapi.AdminAPIRouter,
+) AdminServerHTTP {
 	r := gin.Default()
 
 	adminGroup := r.Group("/api/v1/admin")
-	adminGroup.GET("/", func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, "admin")
-	})
+	adminGroup.GET("/ping", aar.PingCtrl.Ping)
 	return r
 }

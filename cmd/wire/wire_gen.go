@@ -7,6 +7,10 @@
 package wire
 
 import (
+	"github.com/kalougata/gomall/api/v1/admin"
+	"github.com/kalougata/gomall/api/v1/mall"
+	"github.com/kalougata/gomall/internal/controller/admin"
+	"github.com/kalougata/gomall/internal/controller/mall"
 	"github.com/kalougata/gomall/internal/server"
 	"github.com/kalougata/gomall/internal/server/http"
 )
@@ -14,8 +18,12 @@ import (
 // Injectors from wire.go:
 
 func NewApp() (*server.Server, func(), error) {
-	mallServerHTTP := serverhttp.NewMallServerHTTP()
-	adminServerHTTP := serverhttp.NewAdminServerHTTP()
+	mallPingController := mallctrl.NewPingController()
+	mallAPIRouter := mallapi.NewMallAPIRouter(mallPingController)
+	mallServerHTTP := serverhttp.NewMallServerHTTP(mallAPIRouter)
+	adminPingController := adminctrl.NewPingController()
+	adminAPIRouter := adminapi.NewAdminAPIRouter(adminPingController)
+	adminServerHTTP := serverhttp.NewAdminServerHTTP(adminAPIRouter)
 	serverServer := server.NewServer(mallServerHTTP, adminServerHTTP)
 	return serverServer, func() {
 	}, nil
