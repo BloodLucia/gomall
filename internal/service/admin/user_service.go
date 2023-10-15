@@ -1,8 +1,13 @@
 package adminsrv
 
-import "context"
+import (
+	"context"
+
+	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
+)
 
 type userService struct {
+	repo adminrepo.UserRepo
 }
 
 type UserService interface {
@@ -20,6 +25,6 @@ func (srv *userService) Register(ctx context.Context) error {
 	panic("unimplemented")
 }
 
-func NewUserService() UserService {
-	return &userService{}
+func NewUserService(repo adminrepo.UserRepo) UserService {
+	return &userService{repo}
 }
