@@ -1,6 +1,8 @@
 package adminctrl
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gookit/validate"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
@@ -50,10 +52,7 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 	}
 
 	if err := ctrl.service.Register(ctx, &reqBody); err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{
-			"msg": err.Error(),
-		})
-		return
+		log.Panic(err)
 	}
 
 	ctx.JSON(200, "ok!")
