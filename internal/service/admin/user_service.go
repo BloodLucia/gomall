@@ -29,7 +29,7 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 		return nil, errors.New("用户不存在")
 	}
 
-	if !utils.BcryptCheck(req.Passwd, u.PasswdMd5) {
+	if !utils.BcryptCheck(req.Passwd, u.Passwd) {
 		return nil, errors.New("账号或密码错误")
 	}
 
@@ -49,7 +49,7 @@ func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegist
 	}
 	model := &adminmodel.User{
 		LoginName: req.LoginName,
-		PasswdMd5: utils.BcryptHash(req.Passwd),
+		Passwd:    utils.BcryptHash(req.Passwd),
 	}
 	if err = srv.repo.Create(ctx, model); err != nil {
 		return err

@@ -6,7 +6,7 @@ type User struct {
 	ID        int       `xorm:"not null pk autoincr BIGINT(20) id"`
 	LoginName string    `xorm:"not null unique VARCHAR(50) login_name"`
 	NickName  string    `xorm:"null VARCHAR(50) nick_name"`
-	PasswdMd5 string    `xorm:"not null VARCHAR(255) passwdmd5"`
+	Passwd    string    `xorm:"not null VARCHAR(255) passwdmd5"`
 	Email     string    `xorm:"null unique VARCHAR(100) email"`
 	Locked    int       `xorm:"not null default 0 TINYINT locked"`
 	CreatedAt time.Time `xorm:"created TIMESTAMP created_at"`
