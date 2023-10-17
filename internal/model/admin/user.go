@@ -15,8 +15,8 @@ type User struct {
 }
 
 type UserRegisterRequest struct {
-	LoginName string `json:"login_name"`
-	Passwd    string `json:"passwd"`
+	LoginName string `validate:"required|min_len:5|max_len:10" message:"required:login_name 登录名不能为空|min_len:login_name 登录名应为5-10个字符|max_len:login_name 登录名应为5-10个字符" json:"login_name"`
+	Passwd    string `validate:"required|min_len:8|max_len:20" message:"required:passwd 密码不能为空|min_len:passwd 密码应为8-20个字符|max_len:passwd 密码应为8-20个字符" json:"passwd"`
 }
 
 func (u User) TableName() string {

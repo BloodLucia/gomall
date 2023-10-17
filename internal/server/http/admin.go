@@ -13,6 +13,6 @@ func NewAdminServerHTTP(
 	r := gin.Default()
 
 	adminGroup := r.Group("/api/v1/admin")
-	adminGroup.GET("/ping", aar.PingCtrl.Ping)
+	aar.RegisterGuestAPIRouter(adminGroup)
 	return r
 }

@@ -2,8 +2,10 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
 
@@ -12,7 +14,14 @@ type Data struct {
 }
 
 func NewData() (*Data, func(), error) {
-	db, err := xorm.NewEngine("", "")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&collation=utf8mb4_unicode_ci",
+		"root",
+		"123456",
+		"127.0.0.1",
+		3306,
+		"gomall_dev",
+	)
+	db, err := xorm.NewEngine("mysql", dsn)
 
 	if err != nil {
 		return nil, nil, err
