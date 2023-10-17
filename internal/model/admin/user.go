@@ -19,6 +19,15 @@ type UserRegisterRequest struct {
 	Passwd    string `validate:"required|min_len:8|max_len:20" message:"required:passwd 密码不能为空|min_len:passwd 密码应为8-20个字符|max_len:passwd 密码应为8-20个字符" json:"passwd"`
 }
 
+type UserLoginRequest struct {
+	LoginName string `validate:"required" message:"required:账号不能为空" json:"login_name"`
+	Passwd    string `validate:"required" message:"required:密码不能为空" json:"passwd"`
+}
+
+type UserLoginResp struct {
+	Token string `json:"token"`
+}
+
 func (u User) TableName() string {
 	return "t_admin_users"
 }

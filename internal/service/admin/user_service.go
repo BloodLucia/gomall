@@ -14,13 +14,28 @@ type userService struct {
 }
 
 type UserService interface {
-	Login(ctx context.Context) error
+	Login(ctx context.Context, req *adminmodel.UserLoginRequest) (*adminmodel.UserLoginResp, error)
 	Register(ctx context.Context, req *adminmodel.UserRegisterRequest) error
 }
 
 // Login implements UserService.
-func (srv *userService) Login(ctx context.Context) error {
-	panic("unimplemented")
+func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequest) (*adminmodel.UserLoginResp, error) {
+	u, has, err := srv.repo.FindByLoginName(ctx, req.LoginName)
+	if err != nil {
+		return nil, err
+	}
+
+	if !has {
+		return nil, errors.New("用户不存在")
+	}
+
+	if !utils.BcryptCheck(req.Passwd, u.PasswdMd5) {
+		return nil, errors.New("账号或密码错误")
+	}
+
+	resp := &adminmodel.UserLoginResp{Token: ""}
+
+	return resp, nil
 }
 
 // Register implements UserService.

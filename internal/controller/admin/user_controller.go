@@ -13,7 +13,25 @@ type userController struct {
 
 // Login 管理员登录
 func (ctrl *userController) Login(ctx *gin.Context) {
-	ctx.String(200, "login")
+	var reqBody adminmodel.UserLoginRequest
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.AbortWithStatusJSON(422, err.Error())
+		return
+	}
+
+	v := validate.Struct(&reqBody)
+	if !v.Validate() {
+		ctx.AbortWithStatusJSON(400, v.Errors)
+		return
+	}
+
+	resp, err := ctrl.service.Login(ctx, &reqBody)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, err.Error())
+		return
+	}
+
+	ctx.JSON(200, resp)
 }
 
 // Register 管理员账号注册
