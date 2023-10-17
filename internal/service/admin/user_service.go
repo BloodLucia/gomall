@@ -2,10 +2,10 @@ package adminsrv
 
 import (
 	"context"
-	"errors"
 
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
+	"github.com/kalougata/gomall/pkg/e"
 )
 
 type userService struct {
@@ -26,7 +26,7 @@ func (srv *userService) Login(ctx context.Context) error {
 func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegisterRequest) error {
 	_, has, err := srv.repo.FindByLoginName(ctx, req.LoginName)
 	if has {
-		return errors.New("用户名已被注册, 请重新输入")
+		return e.BadRequest("账号已被注册, 请重新输入")
 	}
 	if err != nil {
 		return err
