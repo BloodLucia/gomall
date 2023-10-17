@@ -1,8 +1,8 @@
-package model
+package adminmodel
 
 import "time"
 
-type Admin struct {
+type User struct {
 	ID        int       `xorm:"not null pk autoincr BIGINT(20) id"`
 	LoginName string    `xorm:"not null unique VARCHAR(50) login_name"`
 	NickName  string    `xorm:"null VARCHAR(50) nick_name"`
@@ -14,6 +14,6 @@ type Admin struct {
 	DeletedAt time.Time `xorm:"deleted TIMESTAMP deleted_at"`
 }
 
-func (Admin) TableName() string {
-	return "gm_admin"
+func (u User) TableName() string {
+	return "t_admin_users"
 }
