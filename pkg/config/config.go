@@ -1,14 +1,22 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"log"
+
+	"github.com/joho/godotenv"
+	"github.com/kalougata/gomall/configs"
 )
 
-func New() *viper.Viper {
-	v := viper.New()
+type Config struct {
+	DB configs.Database
+}
 
-	v.SetConfigType("yaml")
-	v.SetConfigName("config.yaml")
+func New() *Config {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("failed to load env file: %s", err)
+	}
 
-	return v
+	return &Config{
+		DB: configs.DatabaseStore(),
+	}
 }
