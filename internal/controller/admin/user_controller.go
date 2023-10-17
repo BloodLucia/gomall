@@ -31,7 +31,11 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, reqBody)
+	if err := ctrl.service.Register(ctx, &reqBody); err != nil {
+		ctx.AbortWithStatusJSON(500, err)
+		return
+	}
+	ctx.JSON(200, "ok!")
 }
 
 type UserController interface {
