@@ -32,9 +32,12 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 	}
 
 	if err := ctrl.service.Register(ctx, &reqBody); err != nil {
-		ctx.AbortWithStatusJSON(500, err)
+		ctx.AbortWithStatusJSON(500, gin.H{
+			"msg": err.Error(),
+		})
 		return
 	}
+
 	ctx.JSON(200, "ok!")
 }
 

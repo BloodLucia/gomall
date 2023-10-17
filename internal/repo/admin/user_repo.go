@@ -2,6 +2,7 @@ package adminrepo
 
 import (
 	"context"
+	"errors"
 
 	"github.com/kalougata/gomall/internal/data"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
@@ -16,19 +17,16 @@ func (repo *userRepo) FindByLoginName(ctx context.Context, loginName string) (re
 	result = &adminmodel.User{}
 	has, err = repo.DB.Context(ctx).Where("login_name = ?", loginName).Get(result)
 	if err != nil {
-		return nil, false, err
-	}
-	if !has {
-		return nil, false, nil
+		err = errors.New("查询数据库失败")
 	}
 
-	return result, true, nil
+	return
 }
 
 // Create implements UserRepo.
 func (repo *userRepo) Create(ctx context.Context, model *adminmodel.User) error {
 	if _, err := repo.DB.Context(ctx).Insert(model); err != nil {
-		return err
+		return errors.New("插入数据库失败")
 	}
 
 	return nil
