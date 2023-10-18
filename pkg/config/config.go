@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -12,7 +13,12 @@ type Config struct {
 }
 
 func New() *Config {
-	if err := godotenv.Load(); err != nil {
+	var config string
+
+	flag.StringVar(&config, "config", ".env", "config file, eg: --config=[.filename]")
+	flag.Parse()
+
+	if err := godotenv.Load(config); err != nil {
 		log.Fatalf("failed to load env file: %s", err)
 	}
 
