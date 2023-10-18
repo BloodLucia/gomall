@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	DB configs.Database
+	DB  configs.Database
+	JWT configs.JWT
 }
 
 func New() *Config {
@@ -23,6 +24,7 @@ func New() *Config {
 	}
 
 	return &Config{
-		DB: configs.DatabaseStore(),
+		DB:  configs.DatabaseStore(),
+		JWT: configs.JWTStore(),
 	}
 }
