@@ -25,3 +25,7 @@ func InternalServer() *Error {
 func IsInternalServer(err *Error) bool {
 	return err.Code == http.StatusInternalServerError
 }
+
+func UnprocessableEntity() *Error {
+	return New(http.StatusUnprocessableEntity, "参数校验失败, 请查看data中的提示信息")
+}

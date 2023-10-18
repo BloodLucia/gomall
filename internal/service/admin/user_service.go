@@ -2,12 +2,12 @@ package adminsrv
 
 import (
 	"context"
-	"errors"
 	"log"
 	"time"
 
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
+	"github.com/kalougata/gomall/pkg/errors"
 	"github.com/kalougata/gomall/pkg/jwt"
 	"github.com/kalougata/gomall/pkg/utils"
 	"github.com/spf13/cast"
@@ -31,11 +31,11 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 	}
 
 	if !has {
-		return nil, errors.New("用户不存在")
+		return nil, errors.NotFound("账号不存在")
 	}
 
 	if !utils.BcryptCheck(req.Passwd, u.Passwd) {
-		return nil, errors.New("账号或密码错误")
+		return nil, errors.BadRequest("账号或密码错误")
 	}
 
 	claims := jwt.MyCustomClaims{
@@ -48,7 +48,7 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 
 	if err != nil {
 		log.Printf("failed to create token: %s \n", err)
-		return nil, errors.New("创建token失败")
+		return nil, errors.InternalServer().WithMsg("创建Token失败")
 	}
 
 	return &adminmodel.UserLoginResp{Token: token}, nil
@@ -58,7 +58,7 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegisterRequest) error {
 	_, has, err := srv.repo.FindByLoginName(ctx, req.LoginName)
 	if has {
-		return errors.New("账号已被注册, 请重新输入")
+		return errors.BadRequest("账号已被注册, 请重新输入")
 	}
 	if err != nil {
 		return err

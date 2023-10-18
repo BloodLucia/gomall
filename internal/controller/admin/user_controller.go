@@ -7,6 +7,7 @@ import (
 	"github.com/gookit/validate"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
+	"github.com/kalougata/gomall/pkg/errors"
 	"github.com/kalougata/gomall/pkg/response"
 )
 
@@ -18,19 +19,19 @@ type userController struct {
 func (ctrl *userController) Login(ctx *gin.Context) {
 	var reqBody adminmodel.UserLoginRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
-		ctx.AbortWithStatusJSON(422, err.Error())
+		response.Build(ctx, errors.BadRequest(""), nil)
 		return
 	}
 
 	v := validate.Struct(&reqBody)
 	if !v.Validate() {
-		ctx.AbortWithStatusJSON(400, v.Errors)
+		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
 		return
 	}
 
 	res, err := ctrl.service.Login(ctx, &reqBody)
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, err.Error())
+		response.Build(ctx, err, nil)
 		return
 	}
 
