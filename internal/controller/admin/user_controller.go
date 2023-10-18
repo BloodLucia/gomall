@@ -7,6 +7,7 @@ import (
 	"github.com/gookit/validate"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
+	"github.com/kalougata/gomall/pkg/response"
 )
 
 type userController struct {
@@ -27,13 +28,13 @@ func (ctrl *userController) Login(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := ctrl.service.Login(ctx, &reqBody)
+	res, err := ctrl.service.Login(ctx, &reqBody)
 	if err != nil {
 		ctx.AbortWithStatusJSON(400, err.Error())
 		return
 	}
 
-	ctx.JSON(200, resp)
+	response.Build(ctx, nil, res)
 }
 
 // Register 管理员账号注册
@@ -55,7 +56,7 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 		log.Panic(err)
 	}
 
-	ctx.JSON(200, "ok!")
+	response.Build(ctx, nil, nil)
 }
 
 type UserController interface {

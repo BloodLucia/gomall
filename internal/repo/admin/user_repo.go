@@ -6,7 +6,7 @@ import (
 
 	"github.com/kalougata/gomall/internal/data"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
-	"github.com/kalougata/gomall/pkg/e"
+	"github.com/kalougata/gomall/pkg/errors"
 )
 
 type userRepo struct {
@@ -19,7 +19,7 @@ func (repo *userRepo) FindByEmail(ctx context.Context, email string) (result *ad
 	has, err = repo.DB.Context(ctx).Where("email = ?", email).Get(result)
 	if err != nil {
 		log.Println(err)
-		err = e.InternalServer().WithErr(err)
+		err = errors.InternalServer().WithError(err)
 	}
 
 	return
@@ -31,7 +31,7 @@ func (repo *userRepo) FindByLoginName(ctx context.Context, loginName string) (re
 	has, err = repo.DB.Context(ctx).Where("login_name = ?", loginName).Get(result)
 	if err != nil {
 		log.Println(err)
-		err = e.InternalServer().WithErr(err)
+		err = errors.InternalServer().WithError(err)
 	}
 
 	return
@@ -41,7 +41,7 @@ func (repo *userRepo) FindByLoginName(ctx context.Context, loginName string) (re
 func (repo *userRepo) Create(ctx context.Context, model *adminmodel.User) error {
 	if _, err := repo.DB.Context(ctx).Insert(model); err != nil {
 		log.Println(err)
-		return e.InternalServer().WithErr(err)
+		return errors.InternalServer().WithError(err)
 	}
 
 	return nil
