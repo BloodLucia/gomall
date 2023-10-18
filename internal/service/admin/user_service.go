@@ -3,14 +3,19 @@ package adminsrv
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
 
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
+	"github.com/kalougata/gomall/pkg/jwt"
 	"github.com/kalougata/gomall/pkg/utils"
+	"github.com/spf13/cast"
 )
 
 type userService struct {
 	repo adminrepo.UserRepo
+	jwt  *jwt.JWT
 }
 
 type UserService interface {
@@ -33,9 +38,20 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 		return nil, errors.New("账号或密码错误")
 	}
 
-	resp := &adminmodel.UserLoginResp{Token: ""}
+	claims := jwt.MyCustomClaims{
+		UserId:    cast.ToString(u.ID),
+		LoginName: u.LoginName,
+		UserRule:  "admin",
+	}
 
-	return resp, nil
+	token, err := srv.jwt.BuildToken(claims, time.Now().Add(time.Minute*10))
+
+	if err != nil {
+		log.Printf("failed to create token: %s \n", err)
+		return nil, errors.New("创建token失败")
+	}
+
+	return &adminmodel.UserLoginResp{Token: token}, nil
 }
 
 // Register implements UserService.
@@ -58,6 +74,6 @@ func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegist
 	return nil
 }
 
-func NewUserService(repo adminrepo.UserRepo) UserService {
-	return &userService{repo}
+func NewUserService(repo adminrepo.UserRepo, jwt *jwt.JWT) UserService {
+	return &userService{repo, jwt}
 }

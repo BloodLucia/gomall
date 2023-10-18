@@ -13,6 +13,7 @@ import (
 	serverhttp "github.com/kalougata/gomall/internal/server/http"
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
 	"github.com/kalougata/gomall/pkg/config"
+	"github.com/kalougata/gomall/pkg/jwt"
 )
 
 func NewApp() (*server.Server, func(), error) {
@@ -26,5 +27,6 @@ func NewApp() (*server.Server, func(), error) {
 		serverhttp.NewAdminServerHTTP,
 		serverhttp.NewMallServerHTTP,
 		server.NewServer,
+		jwt.New,
 	))
 }

@@ -17,6 +17,7 @@ import (
 	"github.com/kalougata/gomall/internal/server/http"
 	"github.com/kalougata/gomall/internal/service/admin"
 	"github.com/kalougata/gomall/pkg/config"
+	"github.com/kalougata/gomall/pkg/jwt"
 )
 
 // Injectors from wire.go:
@@ -32,7 +33,8 @@ func NewApp() (*server.Server, func(), error) {
 		return nil, nil, err
 	}
 	userRepo := adminrepo.NewUserRepo(dataData)
-	userService := adminsrv.NewUserService(userRepo)
+	jwtJWT := jwt.New(configConfig)
+	userService := adminsrv.NewUserService(userRepo, jwtJWT)
 	userController := adminctrl.NewUserController(userService)
 	adminAPIRouter := adminapi.NewAdminAPIRouter(adminPingController, userController)
 	adminServerHTTP := serverhttp.NewAdminServerHTTP(adminAPIRouter)
