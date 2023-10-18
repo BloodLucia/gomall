@@ -36,6 +36,8 @@ func NewData(conf *config.Config) (*Data, func(), error) {
 		DB: db,
 	}
 
+	log.Panicln("succced connect to database")
+
 	return data, func() {
 		if err := db.Close(); err != nil {
 			log.Fatalf("falied to close database: %s", err)
