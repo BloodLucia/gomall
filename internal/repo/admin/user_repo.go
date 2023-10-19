@@ -41,7 +41,7 @@ func (repo *userRepo) FindById(ctx context.Context, userId int) (result *adminmo
 		err = errors.InternalServer().WithError(err)
 	}
 
-	return nil, false, nil
+	return
 }
 
 // FindByLoginName 根据LoginName查找用户

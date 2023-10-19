@@ -55,6 +55,7 @@ func (srv *userService) GetUserInfo(ctx context.Context, userId int) (userInfo *
 			ID:        user.ID,
 			LoginName: user.LoginName,
 			NickName:  user.NickName,
+			Email:     user.Email,
 			Locked:    user.Locked,
 			CreatedAt: user.CreatedAt,
 		}
