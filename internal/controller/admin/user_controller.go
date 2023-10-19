@@ -15,7 +15,24 @@ type userController struct {
 
 // UpdateUserPasswd 更新管理员信息
 func (ctrl *userController) UpdateUserInfo(ctx *gin.Context) {
-	panic("unimplemented")
+	var reqBody adminmodel.UpdateUserInfoRequest
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		response.Build(ctx, errors.UnprocessableEntity(), err.Error())
+		return
+	}
+
+	v := validate.Struct(reqBody)
+	if !v.Validate() {
+		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
+		return
+	}
+
+	if err := ctrl.service.UpdateUserInfo(ctx, &reqBody); err != nil {
+		response.Build(ctx, err, nil)
+		return
+	}
+
+	response.Build(ctx, nil, nil)
 }
 
 // GetUserInfo 获取管理员的信息
@@ -39,11 +56,11 @@ func (ctrl *userController) GetUserInfo(ctx *gin.Context) {
 func (ctrl *userController) Login(ctx *gin.Context) {
 	var reqBody adminmodel.UserLoginRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
-		response.Build(ctx, errors.UnprocessableEntity(), err.Error())
+		response.Build(ctx, errors.UnprocessableEntity(), err)
 		return
 	}
 
-	v := validate.Struct(reqBody)
+	v := validate.Struct(&reqBody)
 	if !v.Validate() {
 		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
 		return
@@ -64,7 +81,7 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 		response.Build(ctx, errors.UnprocessableEntity(), err.Error())
 		return
 	}
-	v := validate.Struct(reqBody)
+	v := validate.Struct(&reqBody)
 	if !v.Validate() {
 		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
 		return

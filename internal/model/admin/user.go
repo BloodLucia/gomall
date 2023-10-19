@@ -37,6 +37,13 @@ type UserLoginResp struct {
 	Token string `json:"token"`
 }
 
+type UpdateUserInfoRequest struct {
+	ID        int    `json:"id" validate:"required" message:"required:用户ID不能为空"`
+	LoginName string `json:"login_name" validate:"required|min_len:5|max_len:10" message:"required:login_name 登录名不能为空|min_len:login_name 登录名应为5-10个字符|max_len:login_name 登录名应为5-10个字符"`
+	NickName  string `json:"nick_name" validate:"required" message:"required:昵称不能为空"`
+	Email     string `json:"email" validate:"required|email" message:"required:邮箱不能为空|email:邮箱格式错误"`
+}
+
 func (u User) TableName() string {
 	return "t_admin_users"
 }

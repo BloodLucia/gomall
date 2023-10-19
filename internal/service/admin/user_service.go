@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/kalougata/gomall/internal/data"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
 	"github.com/kalougata/gomall/pkg/errors"
@@ -16,12 +17,35 @@ import (
 type userService struct {
 	repo adminrepo.UserRepo
 	jwt  *jwt.JWT
+	data *data.Data
 }
 
 type UserService interface {
 	Login(ctx context.Context, req *adminmodel.UserLoginRequest) (*adminmodel.UserLoginResp, error)
 	Register(ctx context.Context, req *adminmodel.UserRegisterRequest) error
 	GetUserInfo(ctx context.Context, userId int) (userInfo *adminmodel.UserInfo, err error)
+	UpdateUserInfo(ctx context.Context, req *adminmodel.UpdateUserInfoRequest) error
+}
+
+// UpdateUserInfo 修改管理员信息
+func (srv *userService) UpdateUserInfo(ctx context.Context, req *adminmodel.UpdateUserInfoRequest) error {
+	user, has, err := srv.repo.FindById(ctx, req.ID)
+	if err != nil {
+		return err
+	}
+	if !has {
+		return errors.NotFound("用户不存在")
+	}
+
+	user.LoginName = req.LoginName
+	user.NickName = req.NickName
+	user.Email = req.Email
+
+	if err := srv.repo.Update(ctx, user); err != nil {
+		return errors.InternalServer().WithMsg("更新用户信息失败, 请稍后再试")
+	}
+
+	return nil
 }
 
 // GetUserInfo 获取管理员信息
@@ -50,10 +74,6 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 	if !has {
 		return nil, errors.NotFound("账号不存在")
 	}
-	if !utils.BcryptCheck(req.Passwd, u.Passwd) {
-		return nil, errors.BadRequest("账号或密码错误")
-	}
-
 	claims := jwt.MyCustomClaims{
 		UserId:    cast.ToString(u.ID),
 		LoginName: u.LoginName,
@@ -90,6 +110,6 @@ func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegist
 	return nil
 }
 
-func NewUserService(repo adminrepo.UserRepo, jwt *jwt.JWT) UserService {
-	return &userService{repo, jwt}
+func NewUserService(repo adminrepo.UserRepo, jwt *jwt.JWT, data *data.Data) UserService {
+	return &userService{repo, jwt, data}
 }

@@ -35,7 +35,7 @@ func NewApp() (*server.Server, func(), error) {
 	}
 	userRepo := adminrepo.NewUserRepo(dataData)
 	jwtJWT := jwt.New(configConfig)
-	userService := adminsrv.NewUserService(userRepo, jwtJWT)
+	userService := adminsrv.NewUserService(userRepo, jwtJWT, dataData)
 	userController := adminctrl.NewUserController(userService)
 	adminAPIRouter := adminapi.NewAdminAPIRouter(adminPingController, userController)
 	jwtMiddleware := middleware.NewJWTMiddleware(userService, userRepo, jwtJWT)
