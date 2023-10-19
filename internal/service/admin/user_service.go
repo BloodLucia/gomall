@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
 	"github.com/kalougata/gomall/pkg/errors"
@@ -22,27 +21,24 @@ type userService struct {
 type UserService interface {
 	Login(ctx context.Context, req *adminmodel.UserLoginRequest) (*adminmodel.UserLoginResp, error)
 	Register(ctx context.Context, req *adminmodel.UserRegisterRequest) error
-	GetUserInfo(ctx *gin.Context) (userInfo *adminmodel.UserInfoResponse, err error)
+	GetUserInfo(ctx context.Context, userId int) (userInfo *adminmodel.UserInfo, err error)
 }
 
 // GetUserInfo 获取管理员信息
-func (srv *userService) GetUserInfo(ctx *gin.Context) (userInfo *adminmodel.UserInfoResponse, err error) {
-	user, has, err := srv.repo.FindById(ctx, 1)
-	if err != nil {
-		return nil, err
-	}
-	if !has {
-		return nil, nil
-	}
-	userInfo = &adminmodel.UserInfoResponse{
-		ID:        user.ID,
-		LoginName: user.LoginName,
-		NickName:  user.NickName,
-		Locked:    user.Locked,
-		CreatedAt: user.CreatedAt,
-	}
+func (srv *userService) GetUserInfo(ctx context.Context, userId int) (userInfo *adminmodel.UserInfo, err error) {
+	if user, has, err := srv.repo.FindById(ctx, userId); err == nil && has {
+		userInfo = &adminmodel.UserInfo{
+			ID:        user.ID,
+			LoginName: user.LoginName,
+			NickName:  user.NickName,
+			Locked:    user.Locked,
+			CreatedAt: user.CreatedAt,
+		}
 
-	return userInfo, err
+		return userInfo, nil
+	} else {
+		return nil, errors.InternalServer().WithMsg("获取用户信息失败")
+	}
 }
 
 // Login implements UserService.
@@ -87,8 +83,8 @@ func (srv *userService) Register(ctx context.Context, req *adminmodel.UserRegist
 		LoginName: req.LoginName,
 		Passwd:    utils.BcryptHash(req.Passwd),
 	}
-	if err = srv.repo.Create(ctx, model); err != nil {
-		return err
+	if err := srv.repo.Create(ctx, model); err != nil {
+		return errors.InternalServer().WithMsg("注册账号失败, 请稍后重试")
 	}
 
 	return nil

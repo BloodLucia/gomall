@@ -1,14 +1,12 @@
 package adminctrl
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gookit/validate"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
 	"github.com/kalougata/gomall/pkg/errors"
 	"github.com/kalougata/gomall/pkg/response"
-	"github.com/kalougata/gomall/pkg/validator"
 )
 
 type userController struct {
@@ -22,15 +20,32 @@ func (ctrl *userController) UpdateUserInfo(ctx *gin.Context) {
 
 // GetUserInfo 获取管理员的信息
 func (ctrl *userController) GetUserInfo(ctx *gin.Context) {
-	panic("unimplemented")
+	value, exists := ctx.Get("user")
+	if !exists {
+		response.Build(ctx, nil, nil)
+		return
+	}
+
+	userId := value.(*adminmodel.User).ID
+	if user, err := ctrl.service.GetUserInfo(ctx, userId); err != nil {
+		response.Build(ctx, err, nil)
+		return
+	} else {
+		response.Build(ctx, nil, user)
+	}
 }
 
 // Login 管理员登录
 func (ctrl *userController) Login(ctx *gin.Context) {
 	var reqBody adminmodel.UserLoginRequest
-	if errs := validator.Checker(ctx, reqBody); errs != nil {
-		fmt.Println(errs)
-		response.Build(ctx, errors.UnprocessableEntity(), errs)
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		response.Build(ctx, errors.UnprocessableEntity(), err.Error())
+		return
+	}
+
+	v := validate.Struct(reqBody)
+	if !v.Validate() {
+		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
 		return
 	}
 
@@ -45,11 +60,15 @@ func (ctrl *userController) Login(ctx *gin.Context) {
 // Register 管理员账号注册
 func (ctrl *userController) Register(ctx *gin.Context) {
 	var reqBody adminmodel.UserRegisterRequest
-	if errs := validator.Checker(ctx, reqBody); errs != nil {
-		response.Build(ctx, errors.UnprocessableEntity(), errs)
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		response.Build(ctx, errors.UnprocessableEntity(), err.Error())
 		return
 	}
-
+	v := validate.Struct(reqBody)
+	if !v.Validate() {
+		response.Build(ctx, errors.UnprocessableEntity(), v.Errors)
+		return
+	}
 	if err := ctrl.service.Register(ctx, &reqBody); err != nil {
 		response.Build(ctx, err, nil)
 		return

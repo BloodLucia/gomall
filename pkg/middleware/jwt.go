@@ -38,6 +38,7 @@ func (jm *JWTMiddleware) AdminJWT() gin.HandlerFunc {
 		if err != nil {
 			if errors.Is(err, jwtPkg.ErrTokenExpired) {
 				response.Build(ctx, myErrs.Unauthorized().WithMsg("token已过期"), nil)
+				return
 			}
 			response.Build(ctx, myErrs.Unauthorized().WithMsg("token校验失败"), nil)
 			return
