@@ -14,6 +14,7 @@ import (
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
 	"github.com/kalougata/gomall/pkg/config"
 	"github.com/kalougata/gomall/pkg/jwt"
+	"github.com/kalougata/gomall/pkg/middleware"
 )
 
 func NewApp() (*server.Server, func(), error) {
@@ -28,5 +29,6 @@ func NewApp() (*server.Server, func(), error) {
 		serverhttp.NewMallServerHTTP,
 		server.NewServer,
 		jwt.New,
+		middleware.NewJWTMiddleware,
 	))
 }

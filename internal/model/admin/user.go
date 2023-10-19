@@ -24,6 +24,15 @@ type UserLoginRequest struct {
 	Passwd    string `validate:"required" message:"required:密码不能为空" json:"passwd"`
 }
 
+type UserInfoResponse struct {
+	ID        int       `json:"id"`
+	LoginName string    `json:"login_name"`
+	NickName  string    `json:"nick_name"`
+	Email     string    `json:"email"`
+	Locked    int       `json:"locked"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type UserLoginResp struct {
 	Token string `json:"token"`
 }

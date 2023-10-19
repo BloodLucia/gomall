@@ -15,6 +15,16 @@ type userController struct {
 	service adminsrv.UserService
 }
 
+// UpdateUserPasswd 更新管理员信息
+func (ctrl *userController) UpdateUserInfo(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// GetUserInfo 获取管理员的信息
+func (ctrl *userController) GetUserInfo(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
 // Login 管理员登录
 func (ctrl *userController) Login(ctx *gin.Context) {
 	var reqBody adminmodel.UserLoginRequest
@@ -51,6 +61,8 @@ func (ctrl *userController) Register(ctx *gin.Context) {
 type UserController interface {
 	Register(ctx *gin.Context)
 	Login(ctx *gin.Context)
+	GetUserInfo(ctx *gin.Context)
+	UpdateUserInfo(ctx *gin.Context)
 }
 
 func NewUserController(service adminsrv.UserService) UserController {

@@ -1,47 +1,57 @@
 package middleware
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
+	jwtPkg "github.com/golang-jwt/jwt/v5"
 	adminrepo "github.com/kalougata/gomall/internal/repo/admin"
 	adminsrv "github.com/kalougata/gomall/internal/service/admin"
+	myErrs "github.com/kalougata/gomall/pkg/errors"
 	"github.com/kalougata/gomall/pkg/jwt"
+	"github.com/kalougata/gomall/pkg/response"
+	"github.com/spf13/cast"
 )
 
 type JWTMiddleware struct {
 	aus adminsrv.UserService
 	aur adminrepo.UserRepo
+	jwt *jwt.JWT
 }
 
 func NewJWTMiddleware(
 	aus adminsrv.UserService,
 	aur adminrepo.UserRepo,
+	jwt *jwt.JWT,
 ) *JWTMiddleware {
-	return &JWTMiddleware{aus, aur}
+	return &JWTMiddleware{aus, aur, jwt}
 }
 
-func (jm *JWTMiddleware) AdminJWT(j *jwt.JWT) gin.HandlerFunc {
+func (jm *JWTMiddleware) AdminJWT() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString := ctx.Request.Header.Get("Authorization")
 		if tokenString == "" {
-			ctx.Abort()
+			response.Build(ctx, myErrs.Unauthorized(), nil)
 			return
 		}
-		claims, err := j.ParseToken(tokenString)
+		claims, err := jm.jwt.ParseToken(tokenString)
 		if err != nil {
-			ctx.Abort()
+			if errors.Is(err, jwtPkg.ErrTokenExpired) {
+				response.Build(ctx, myErrs.Unauthorized().WithMsg("token已过期"), nil)
+			}
+			response.Build(ctx, myErrs.Unauthorized().WithMsg("token校验失败"), nil)
 			return
 		}
 		if claims.UserRule == "" || claims.UserRule != "admin" {
-			ctx.Abort()
+			response.Build(ctx, myErrs.Forbidden(), nil)
 			return
 		}
 
-		if user, has, err := jm.aur.FindByLoginName(ctx, claims.LoginName); err == nil && has {
-			ctx.Set("claims", claims)
+		if user, has, err := jm.aur.FindById(ctx, cast.ToInt(claims.UserId)); err == nil && has {
 			ctx.Set("user", user)
 			ctx.Next()
 		} else {
-			ctx.Abort()
+			response.Build(ctx, myErrs.Unauthorized(), nil)
 			return
 		}
 	}
