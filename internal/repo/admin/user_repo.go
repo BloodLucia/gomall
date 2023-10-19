@@ -35,11 +35,11 @@ func (repo *userRepo) FindByEmail(ctx context.Context, email string) (result *ad
 
 // FindById 根据ID查找用户.
 func (repo *userRepo) FindById(ctx context.Context, userId int) (result *adminmodel.User, has bool, err error) {
-	// result = &adminmodel.User{}
-	// has, err = repo.DB.Context(ctx).Where("id = ?", userId).Get(result)
-	// if err != nil {
-	// 	err = errors.InternalServer().WithError(err)
-	// }
+	result = &adminmodel.User{}
+	has, err = repo.DB.Context(ctx).Where("id = ?", userId).Get(result)
+	if err != nil {
+		err = errors.InternalServer().WithError(err)
+	}
 
 	return nil, false, nil
 }
