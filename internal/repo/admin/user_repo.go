@@ -2,7 +2,6 @@ package adminrepo
 
 import (
 	"context"
-	"log"
 
 	"github.com/kalougata/gomall/internal/data"
 	adminmodel "github.com/kalougata/gomall/internal/model/admin"
@@ -18,7 +17,6 @@ func (repo *userRepo) FindByEmail(ctx context.Context, email string) (result *ad
 	result = &adminmodel.User{}
 	has, err = repo.DB.Context(ctx).Where("email = ?", email).Get(result)
 	if err != nil {
-		log.Println(err)
 		err = errors.InternalServer().WithError(err)
 	}
 
@@ -30,7 +28,6 @@ func (repo *userRepo) FindByLoginName(ctx context.Context, loginName string) (re
 	result = &adminmodel.User{}
 	has, err = repo.DB.Context(ctx).Where("login_name = ?", loginName).Get(result)
 	if err != nil {
-		log.Println(err)
 		err = errors.InternalServer().WithError(err)
 	}
 
@@ -40,7 +37,6 @@ func (repo *userRepo) FindByLoginName(ctx context.Context, loginName string) (re
 // Create implements UserRepo.
 func (repo *userRepo) Create(ctx context.Context, model *adminmodel.User) error {
 	if _, err := repo.DB.Context(ctx).Insert(model); err != nil {
-		log.Println(err)
 		return errors.InternalServer().WithError(err)
 	}
 

@@ -29,11 +29,9 @@ func (srv *userService) Login(ctx context.Context, req *adminmodel.UserLoginRequ
 	if err != nil {
 		return nil, err
 	}
-
 	if !has {
 		return nil, errors.NotFound("账号不存在")
 	}
-
 	if !utils.BcryptCheck(req.Passwd, u.Passwd) {
 		return nil, errors.BadRequest("账号或密码错误")
 	}
