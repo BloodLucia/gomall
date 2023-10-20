@@ -15,6 +15,12 @@ type Product struct {
 	ProdCreator    int       `xorm:"not null BIGINT(20) prod_creator"`
 }
 
+type AddProductParams struct {
+	ProdName  string
+	ProdIntro string
+	Caregory  string
+}
+
 func (Product) TableName() string {
 	return "t_mall_products"
 }
