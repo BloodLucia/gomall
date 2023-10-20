@@ -3,9 +3,9 @@ package data
 import (
 	"context"
 	"fmt"
-	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gookit/slog"
 	"github.com/kalougata/gomall/pkg/config"
 	"xorm.io/xorm"
 )
@@ -32,13 +32,15 @@ func NewData(conf *config.Config) (*Data, func(), error) {
 		return nil, nil, err
 	}
 
+	slog.Info("成功连接到数据库!")
+
 	data := &Data{
 		DB: db,
 	}
 
 	return data, func() {
 		if err := db.Close(); err != nil {
-			log.Fatalf("falied to close database: %s", err)
+			slog.Warnf("falied to close database: %s", err)
 		}
 	}, nil
 }
