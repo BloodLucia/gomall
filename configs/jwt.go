@@ -6,7 +6,7 @@ type JWT struct {
 	Key string `required:"true"`
 }
 
-func JWTStore() JWT {
+func JWTConfig() JWT {
 	var jwt JWT
 	envconfig.MustProcess("JWT", &jwt)
 	return jwt

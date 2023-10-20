@@ -25,8 +25,8 @@ func New() *Config {
 	}
 
 	return &Config{
-		DB:  configs.DatabaseStore(),
-		JWT: configs.JWTStore(),
+		DB:  configs.DatabaseConfig(),
+		JWT: configs.JWTConfig(),
 		RDB: configs.RedisConfig(),
 	}
 }

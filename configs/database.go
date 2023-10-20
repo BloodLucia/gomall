@@ -11,7 +11,7 @@ type Database struct {
 	DbName string `required:"true"`
 }
 
-func DatabaseStore() Database {
+func DatabaseConfig() Database {
 	var db Database
 	envconfig.MustProcess("DB", &db)
 	return db
