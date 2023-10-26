@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/google/wire v0.5.0
+	github.com/gookit/slog v0.5.4
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/spf13/cast v1.5.1
@@ -15,7 +16,6 @@ require (
 require (
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/gookit/gsr v0.1.0 // indirect
-	github.com/gookit/slog v0.5.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sync v0.3.0 // indirect

@@ -11,7 +11,7 @@ import (
 type Config struct {
 	DB  configs.Database
 	JWT configs.JWT
-	RDB configs.Redis
+	// RDB configs.Redis
 }
 
 func New() *Config {
@@ -27,6 +27,6 @@ func New() *Config {
 	return &Config{
 		DB:  configs.DatabaseConfig(),
 		JWT: configs.JWTConfig(),
-		RDB: configs.RedisConfig(),
+		// RDB: configs.RedisConfig(),
 	}
 }
